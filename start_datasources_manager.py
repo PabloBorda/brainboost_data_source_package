@@ -3,8 +3,8 @@
 start_datasource_manager.py
 
 This script initializes and runs the DataSourceManager.
-It automatically adjusts sys.path so that the package is importable whether the script is run
-from the repository root or from within the package folder.
+It adjusts sys.path so that the package "brainboost_data_source_package" is always importable,
+whether you run the script from the repository root or from within the package directory.
 The DataSourceManager publishes its registration on the "manager_registry" channel
 periodically (every 5 seconds), so that any client (e.g. a PyQt frontend) can eventually
 receive its network connection information.
@@ -16,27 +16,26 @@ import sys
 # Determine the directory where this script resides.
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Check if the package folder "brainboost_data_source_package" exists in the current directory.
-# If not, assume that the current directory is the package folder and add its parent.
-if os.path.exists(os.path.join(script_dir, "brainboost_data_source_package")):
-    # Running from the repository root.
-    repo_root = script_dir
-else:
-    # Likely running from inside the package folder.
+# If the script's directory name is "brainboost_data_source_package", then we are inside the package folder.
+# In that case, add its parent directory to sys.path so that the package is importable as a top-level module.
+if os.path.basename(script_dir) == "brainboost_data_source_package":
     repo_root = os.path.abspath(os.path.join(script_dir, os.pardir))
+else:
+    # Otherwise, assume we're in the repository root.
+    repo_root = script_dir
 
-# Ensure that the repository root is in sys.path.
 if repo_root not in sys.path:
     sys.path.insert(0, repo_root)
 
-# Debug print (optional)
-#print("sys.path:", sys.path)
+# Optional: Debug print to verify sys.path.
+# print("sys.path:", sys.path)
 
-# Now try to import DataSourceManager.
+# Now try to import the DataSourceManager.
 try:
     from brainboost_data_source_package.data_source_manager.DataSourceManager import DataSourceManager
 except ModuleNotFoundError as e:
     print("Import failed even after sys.path adjustment:", e)
+    print("Make sure that an __init__.py file exists in the root of 'brainboost_data_source_package'")
     sys.exit(1)
 
 import redis
