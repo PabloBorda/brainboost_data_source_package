@@ -8,7 +8,6 @@ dist/
 *.egg-info/
 .vscode/
 .idea/
-brainboost_data_source_package
 brainboost_data_source_package.egg-info
 data
 *.log
