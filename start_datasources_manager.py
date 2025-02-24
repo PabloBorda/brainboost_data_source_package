@@ -3,8 +3,8 @@
 start_datasource_manager.py
 
 This script initializes and runs the DataSourceManager.
-It automatically adds the parent directory (the project root) to sys.path so that 
-the 'brainboost_data_source_package' is always importable, regardless of the working directory.
+It automatically ensures that the package can be imported whether you run it
+from the project root or from inside the package directory.
 The DataSourceManager publishes its registration on the "manager_registry" channel
 periodically (every 5 seconds), so that any client (e.g. a PyQt frontend) can eventually
 receive its network connection information.
@@ -13,13 +13,18 @@ receive its network connection information.
 import os
 import sys
 
-# Determine the current directory of this script.
+# Ensure the parent directory is in sys.path so that absolute imports work when run from the project root.
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# Compute the parent directory (project root) which should contain the package.
 project_root = os.path.abspath(os.path.join(current_dir, os.pardir))
-# Add the project root to sys.path if it isn't already present.
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
+
+# Attempt to import DataSourceManager using an absolute import.
+try:
+    from brainboost_data_source_package.data_source_manager.DataSourceManager import DataSourceManager
+except ModuleNotFoundError:
+    # Fallback to relative import if the script is run from inside the package directory.
+    from data_source_manager.DataSourceManager import DataSourceManager
 
 import redis
 import json
@@ -27,7 +32,6 @@ import socket
 import time
 import threading
 from brainboost_configuration_package.BBConfig import BBConfig
-from brainboost_data_source_package.data_source_manager.DataSourceManager import DataSourceManager
 
 def get_local_ip():
     """
