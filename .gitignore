@@ -26,3 +26,4 @@ terraform.tfstate.backup
 terraform.tfstate
 main_terraform_aws.tf_old
 .terraform.lock.hcl
+main_terraform_aws.tf_old
