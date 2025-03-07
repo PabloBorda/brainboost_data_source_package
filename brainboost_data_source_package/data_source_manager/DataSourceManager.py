@@ -34,6 +34,13 @@ from brainboost_configuration_package.BBConfig import BBConfig
 class DataSourceManager:
     def __init__(self, redis_host=None, redis_port=None,
                  command_channel_prefix='datasource_commands', command_channel=None):
+        
+        redis_private_ip = BBConfig.get("brainboost_server_vm_redis_private_ip_0")
+        redis_private_port = BBConfig.get("brainboost_server_vm_redis_private_port_0")
+        BBConfig.override("redis_server_ip", redis_private_ip)
+        BBConfig.override("redis_server_port", redis_private_port)
+
+
         if redis_host is None:
             redis_host = BBConfig.get('redis_server_ip')
         if redis_port is None:
