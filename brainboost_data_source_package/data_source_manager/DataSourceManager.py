@@ -129,7 +129,8 @@ class DataSourceManager:
             raise Exception(f"Launcher script not found at {launcher_script}")
         
         # Determine and ensure the target directory exists.
-        target_directory = params.get("target_directory")
+        # target_directory = params.get("target_directory")
+        target_directory = BBConfig.get('data_sources_root_dir')
         if not target_directory:
             default_dir = os.path.join(project_root, "data", datasource)
             os.makedirs(default_dir, exist_ok=True)
